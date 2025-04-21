@@ -1,6 +1,9 @@
 <script lang="ts">
     import { quizzes } from '$lib/quizData';
   
+    // 퀴즈를 무작위로 섞고 처음 10문제만 선택
+    const shuffledQuizzes = quizzes.sort(() => Math.random() - 0.5).slice(0, 10);
+
     let currentIndex = 0;
     let selected: string | null = null;
     let showExplanation = false;
@@ -9,18 +12,20 @@
     let isFinished = false;
     let wrongQuestions: typeof quizzes = [];
   
-    let quiz = quizzes[currentIndex];
-    $: quiz = quizzes[currentIndex];
+    // let quiz = quizzes[currentIndex];
+    // $: quiz = quizzes[currentIndex];
+
+    const quiz = () => shuffledQuizzes[currentIndex];
   
     const select = (option: string) => {
       if (selected) return;
       selected = option;
       showExplanation = true;
       answeredCount++;
-      if (option === quiz.correctAnswer) {
+      if (option === quiz().correctAnswer) {
         score++;
       } else {
-        wrongQuestions.push(quiz);
+        wrongQuestions.push(quiz());
       }
     };
   
@@ -53,19 +58,19 @@
     {#if !isFinished}
       <div class="max-w-xl w-full bg-white shadow-lg rounded-2xl p-6">
         <div class="flex justify-between text-sm text-gray-400 mb-2">
-          <span>{quiz.id}</span>
+          <span>{quiz().id}</span>
           <span>점수: {score} / {answeredCount}</span>
         </div>
   
-        <h1 class="text-xl font-semibold mb-6">{quiz.question}</h1>
+        <h1 class="text-xl font-semibold mb-6">{quiz().question}</h1>
   
         <div class="grid gap-3">
-          {#each quiz.options as option}
+          {#each quiz().options as option}
             <button
               on:click={() => select(option)}
               class="px-4 py-2 rounded-xl border text-left transition-all duration-200
                 {selected === option
-                  ? option === quiz.correctAnswer
+                  ? option === quiz().correctAnswer
                     ? 'bg-green-100 border-green-400'
                     : 'bg-red-100 border-red-400'
                   : 'hover:bg-gray-100 border-gray-300'}"
@@ -79,10 +84,10 @@
         {#if selected}
           <div class="mt-4">
             <p class="text-sm font-medium">
-              ✅ 정답: <span class="font-bold">{quiz.correctAnswer}</span>
+              ✅ 정답: <span class="font-bold">{quiz().correctAnswer}</span>
             </p>
-            {#if showExplanation && quiz.explanation}
-              <p class="mt-2 text-gray-600 text-sm">💡 {quiz.explanation}</p>
+            {#if showExplanation && quiz().explanation}
+              <p class="mt-2 text-gray-600 text-sm">💡 {quiz().explanation}</p>
             {/if}
           </div>
   
