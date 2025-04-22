@@ -81,11 +81,15 @@
           <button
             on:click={() => select(option)}
             class="px-4 py-2 rounded-xl border text-left transition-all duration-200
-              {selected.includes(option)
-                ? (Array.isArray(quiz.correctAnswer) && quiz.correctAnswer.includes(option)) || option === quiz.correctAnswer
-                  ? 'bg-green-100 border-green-400'
-                  : 'bg-red-100 border-red-400'
-                : 'hover:bg-gray-100 border-gray-300'}"
+              {showExplanation
+                ? (selected.includes(option)
+                  ? (Array.isArray(quiz.correctAnswer) && quiz.correctAnswer.includes(option)) || option === quiz.correctAnswer
+                    ? 'bg-green-100 border-green-400'
+                    : 'bg-red-100 border-red-400'
+                  : 'hover:bg-gray-100 border-gray-300')
+                : selected.includes(option)  
+                  ? 'bg-gray-100 border-gray-400'
+                  : 'hover:bg-gray-100 border-gray-300'}"
             disabled={showExplanation}
           >
             {option}
